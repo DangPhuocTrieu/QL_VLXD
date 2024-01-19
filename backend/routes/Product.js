@@ -86,9 +86,8 @@ router.post('/create/:categoryId', async (req, res) => {
 
 // Sửa sản phẩm theo id
 router.put('/edit/:id', async (req, res) => {
-    const id = req.params.id;
-
     try {
+        const id = req.params.id;
         await Product.findOneAndUpdate({ _id: id }, { ...req.body });
         res.status(200).json({
             message: 'Sửa sản phẩm thành công'
@@ -102,7 +101,12 @@ router.put('/edit/:id', async (req, res) => {
 // Xóa sản phẩm
 router.delete('/delete/:id', async (req, res) => {
     try {
-        await Product.findByIdAndDelete(req.params.id);
+        const id = req.params.id;
+        await Product.findByIdAndDelete(id);
+        await Category.updateMany(
+            { posts: id },
+            { $pull: { products: id } }
+        )
         res.status(200).json({ message: 'Xóa sản phẩm thành công' });
 
     } catch (error) {

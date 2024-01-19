@@ -1,7 +1,7 @@
 import express from "express";
 import Category from "../models/Category.js";
 import Product from "../models/Product.js";
-import { getCategoryById } from "../services/category.js";
+import { getCategoryById } from "../services/Category.js";
 
 const router = express.Router();
 

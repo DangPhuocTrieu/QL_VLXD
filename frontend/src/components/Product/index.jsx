@@ -12,7 +12,7 @@ function Product({ product = {} }) {
 
     return ( 
         <div className="product">
-            <img className='product__image' src={image} onClick={handleProductDetail} />
+            <img className='product__image' alt='' src={image} onClick={handleProductDetail} />
             <h4 className="product__name" onClick={handleProductDetail}>{name}</h4>
             <span className="product__price">{formatPrice(price)}</span>
         </div>

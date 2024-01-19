@@ -5,8 +5,12 @@ const orderSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId, 
         ref: 'Customer',
     },
+    address: {
+        type: String,
+        required: true
+    },
     totalPrice: {
-        type: Number, 
+        type: Number,
         min: 0,
         required: true
     },
@@ -17,7 +21,7 @@ const orderSchema = new mongoose.Schema({
     status: { 
         type: String,
         enum: [ 'Đang chờ', 'Đang giao', 'Đã giao' ],
-        default: 'Đang chờ' 
+        default: 'Đang chờ'
     }
 });
 

@@ -1,12 +1,12 @@
 import express from "express";
 import Order from "../models/Order.js";
-import { saveCustomer } from '../services/Order.js';
+import { saveCustomer } from '../services/Customer.js';
 import OrderDetails from "../models/OrderDetails.js";
 
 const router = express.Router();
 
 // Xem tất cả các đơn hàng
-router.get('/viewOrders', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const orders = await Order.find().populate('customer', ['name']);
         res.status(200).json({ 
@@ -20,7 +20,7 @@ router.get('/viewOrders', async (req, res) => {
 })
 
 // Đặt hàng
-router.post('/order', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const customer = req.body[0]; // Thông tin khách hàng
         const products = req.body[1]; // Danh sách các sản phẩm được đặt hàng
@@ -41,7 +41,7 @@ router.post('/order', async (req, res) => {
         const newCustomer = await saveCustomer(customer);
 
         // Tạo và lưu đơn hàng vào database
-        const newOrder = new Order({ customer: newCustomer._id, totalPrice });
+        const newOrder = new Order({ customer: newCustomer._id, totalPrice, address: customer.address });
         const savedOrder = await newOrder.save();
 
         orderItems = orderItems.map(item => {

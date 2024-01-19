@@ -1,5 +1,5 @@
 import { MenuItem, Select } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import OrderManagement from '../OrderManagement';
 import ProductManagement from '../ProductManagement';
@@ -10,7 +10,6 @@ function Admin() {
 
     const user = JSON.parse(localStorage.getItem('user'));
     if (!user || !user?.isAdmin) {
-        console.log(user);
         return <Navigate to="/" replace />;
     }
 

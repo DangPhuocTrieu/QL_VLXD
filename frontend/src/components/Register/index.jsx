@@ -77,7 +77,7 @@ function Register() {
                     </div>
                 </form>
                 <div className="register__image">
-                    <img src={auth_image} />
+                    <img src={auth_image} alt='' />
                 </div>
             </div>
         </div>

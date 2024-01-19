@@ -25,7 +25,7 @@ function ProductDetail() {
                 setProduct(product);
             }
         })()
-    }, [])
+    }, []);
 
     const handleAddToCart = (product) => {
         const carts = JSON.parse(localStorage.getItem('carts')) || [];

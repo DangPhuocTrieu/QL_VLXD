@@ -69,7 +69,7 @@ function Login() {
                     </div>
                 </form>
                 <div className="login__image">
-                    <img src={auth_image} />
+                    <img src={auth_image} alt='' />
                 </div>
             </div>
         </div>

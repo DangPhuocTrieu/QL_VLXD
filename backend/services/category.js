@@ -1,6 +1,6 @@
 import Category from "../models/Category.js";
 
-// Hàm lấy sản phẩm theo ID
+// Hàm lấy danh mục sản phẩm theo ID
 async function getCategoryById(categoryId) {
     try {
         const category = await Category.findById(categoryId).

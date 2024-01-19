@@ -1,5 +1,6 @@
 import Customer from "../models/Customer.js";
 
+// Hàm lưu thông tin customer
 async function saveCustomer(data) {
     try {
         const newCustomer = new Customer(data);

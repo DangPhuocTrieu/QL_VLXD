@@ -1,13 +1,12 @@
-import { Button, MenuItem, Select, TextField } from '@mui/material';
+import { Button, TextField } from '@mui/material';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import * as Yup from 'yup';
-import { getAllProvinces, getDistricts, getWards } from '../../services/checkout';
 import { formatPrice } from '../../services/common';
-import { order } from '../../services/sale';
+import { order } from '../../services/order';
 import './style.scss';
 
 function Checkout() {
@@ -16,66 +15,39 @@ function Checkout() {
     const [carts, setCarts] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
 
-    const [provinces, setProvinces] = useState([]);
-    const [districts, setDistricts] = useState([]);
-    const [wards, setWards] = useState([]);
-
     const requiredMsg = 'Trường này là bắt buộc';
     const form = useFormik({
-        initialValues: { name: '', phone: '', email: '', address: '', province: '', district: '', ward: '' },
+        initialValues: { name: '', phone: '', email: '', address: '' },
         validationSchema: Yup.object({
             name: Yup.string().required(requiredMsg),
             phone: Yup.string().required(requiredMsg).matches(/^[0-9\-\+]{9,15}$/, 'Số điện thoại không hợp lệ'),
             email: Yup.string().required(requiredMsg).email('Trường này phải là email'),
-            address: Yup.string().required(requiredMsg),
-            province: Yup.string().required(requiredMsg),
-            district: Yup.string().required(requiredMsg),
-            ward: Yup.string().required(requiredMsg),
+            address: Yup.string().required(requiredMsg)
         }),
         onSubmit: async (values) => {
-            const { name, phone, email, address } = values;
-            const customer = { name, phone, email, address };
-            const payload = [customer, carts];
-            const data = await order(payload);
+            const data = await order([values, carts]);
             if (data.success) {
                 localStorage.removeItem('carts');
                 setCarts([]);
-                toast.success(data.message);
+                toast.success('Đặt hàng thành công');
             }
         }
     });
 
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (user) {
-        form.values.name = user.username;
-        form.values.email = user.email;
-    }
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            form.values.name = user.username;
+            form.values.email = user.email;
+        }
+    }, []);
 
-    useEffect(async () => {
+    useEffect(() => {
         const cartList = JSON.parse(localStorage.getItem('carts')) || [];
         setCarts(cartList);
         const totalPrice = cartList.reduce((total, item) => total + (item.price * item.quantity), 0);
         setTotalPrice(totalPrice);
     }, []);
-
-    useEffect(async () => {
-        const provinces = await getAllProvinces();
-        setProvinces(provinces);
-    }, []);
-
-    const handleProvinceChange = async (event) => {
-        form.handleChange(event);
-        const id = event.target.value;
-        const districts = await getDistricts(id);
-        setDistricts(districts);
-    }
-
-    const handleDistrictChange = async (event) => {
-        form.handleChange(event);
-        const id = event.target.value;
-        const wards = await getWards(id);
-        setWards(wards);
-    }
 
     const redirectToHomePage = () => {
         navigate('/');
@@ -132,50 +104,6 @@ function Checkout() {
                                             {form.errors.address ? form.errors.address : ''}
                                         </span>
                                     </div>  
-                                    <div className="checkout__infor-person-row">
-                                        <div>
-                                            <label>Tỉnh / Thành phố</label>
-                                            <Select id='province' name='province' value={form.values.province} 
-                                                onChange={handleProvinceChange}>
-                                                {
-                                                    provinces.map(item => (
-                                                        <MenuItem label={item.name} key={item.id} value={item.id}>{item.name}
-                                                        </MenuItem>
-                                                    ))
-                                                }
-                                            </Select>   
-                                            <span className='checkout__infor-person-mess'>
-                                                {form.errors.province ? form.errors.province : '' }
-                                            </span>     
-                                        </div>
-                                        <div>
-                                            <label>Quận / Huyện</label>
-                                            <Select id='district' name='district' value={form.values.district}
-                                                onChange={handleDistrictChange}>
-                                                {
-                                                    districts.map(item => (
-                                                        <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
-                                                    ))
-                                                }
-                                            </Select> 
-                                            <span className='checkout__infor-person-mess'>
-                                                { form.errors.district ? form.errors.district : '' }
-                                            </span>        
-                                        </div>
-                                        <div>
-                                            <label>Phường / Xã</label>
-                                            <Select id='ward' name='ward' value={form.values.ward} onChange={form.handleChange}>
-                                                {
-                                                    wards.map(item => (
-                                                        <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>
-                                                    ))
-                                                }
-                                            </Select>   
-                                            <span className='checkout__infor-person-mess'>
-                                                { form.errors.ward ? form.errors.ward : '' }
-                                            </span>      
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                             <div className="checkout__infor-order">
