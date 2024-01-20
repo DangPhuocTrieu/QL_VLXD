@@ -2,6 +2,7 @@ import express from "express";
 import Category from "../models/Category.js";
 import Product from "../models/Product.js";
 import { getProductById } from "../services/Product.js";
+import { verifyPermission } from '../middleware/verifyPermission.js';
 
 const router = express.Router();
 
@@ -65,7 +66,7 @@ router.get('/search/:value', async (req, res) => {
 })
 
 // Thêm sản phẩm
-router.post('/create/:categoryId', async (req, res) => {
+router.post('/create/:categoryId', verifyPermission, async (req, res) => {
     try {
         const category = await Category.findById(req.params.categoryId);
         const data = { ...req.body, category };
@@ -85,7 +86,7 @@ router.post('/create/:categoryId', async (req, res) => {
 });
 
 // Sửa sản phẩm theo id
-router.put('/edit/:id', async (req, res) => {
+router.put('/edit/:id', verifyPermission, async (req, res) => {
     try {
         const id = req.params.id;
         await Product.findOneAndUpdate({ _id: id }, { ...req.body });
@@ -99,7 +100,7 @@ router.put('/edit/:id', async (req, res) => {
 });
 
 // Xóa sản phẩm
-router.delete('/delete/:id', async (req, res) => {
+router.delete('/delete/:id', verifyPermission, async (req, res) => {
     try {
         const id = req.params.id;
         await Product.findByIdAndDelete(id);

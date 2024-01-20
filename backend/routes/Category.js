@@ -25,7 +25,7 @@ router.get('/:id', async (req, res) => {
         const category = await getCategoryById(req.params.id);
         res.status(200).json({ 
             message: 'Lấy danh mục sản phẩm thành công',
-            data: category 
+            data: category
         });
 
     } catch (error) {
@@ -39,7 +39,7 @@ router.post('/create', async (req, res) => {
         const newCategory = new Category(req.body);
         const savedCategory = await newCategory.save();
         res.status(200).json({
-            message: 'Thêm danh mục  sản phẩm thành công',
+            message: 'Thêm danh mục sản phẩm thành công',
             product: savedCategory
         });
 

@@ -1,14 +1,21 @@
 import express from "express";
 import Order from "../models/Order.js";
-import { saveCustomer } from '../services/Customer.js';
 import OrderDetails from "../models/OrderDetails.js";
+import { getAllUsers } from "../services/User.js";
+import User from "../models/User.js";
 
 const router = express.Router();
 
-// Xem tất cả các đơn hàng
+// Lấy tất cả các đơn hàng
 router.get('/', async (req, res) => {
     try {
-        const orders = await Order.find().populate('customer', ['name']);
+        let orders = await Order.find();
+        const users = await getAllUsers();
+        orders = orders.map(order => {
+            const user = users.find(user => user._id == order.userId);
+            order = { ...order._doc, username: user.username }
+            return order;
+        })
         res.status(200).json({ 
             message: 'Lấy tất cả đơn hàng thành công', 
             data: orders
@@ -20,9 +27,10 @@ router.get('/', async (req, res) => {
 })
 
 // Đặt hàng
-router.post('/', async (req, res) => {
+router.post('/:userId', async (req, res) => {
+    const userId = req.params.userId;
     try {
-        const customer = req.body[0]; // Thông tin khách hàng
+        const user = req.body[0]; // Thông tin khách hàng
         const products = req.body[1]; // Danh sách các sản phẩm được đặt hàng
 
         let orderItems = [];
@@ -38,10 +46,13 @@ router.post('/', async (req, res) => {
             });
         }
 
-        const newCustomer = await saveCustomer(customer);
+        await User.findOneAndUpdate(
+            { _id: userId },
+            { phone: user.phone, address: user.address }
+        )
 
         // Tạo và lưu đơn hàng vào database
-        const newOrder = new Order({ customer: newCustomer._id, totalPrice, address: customer.address });
+        const newOrder = new Order({ userId, totalPrice, address: user.address });
         const savedOrder = await newOrder.save();
 
         orderItems = orderItems.map(item => {

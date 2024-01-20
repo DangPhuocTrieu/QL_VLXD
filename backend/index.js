@@ -1,7 +1,7 @@
 import cors from 'cors';
 import express from "express";
 import mongoose from "mongoose";
-import authRoute from './routes/Auth.js';
+import authenticationRoute from './routes/Authentication.js';
 import categoryRoute from './routes/Category.js';
 import productRoute from './routes/Product.js';
 import orderRoute from './routes/Order.js';
@@ -17,7 +17,7 @@ app.use(cors());
 app.use(express.json());
 
 // ROUTES
-app.use('/api/auth', authRoute);
+app.use('/api/auth', authenticationRoute);
 app.use('/api/user', userRoute);
 app.use('/api/category', categoryRoute);
 app.use('/api/product', productRoute);

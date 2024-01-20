@@ -19,13 +19,19 @@ function Checkout() {
     const form = useFormik({
         initialValues: { name: '', phone: '', email: '', address: '' },
         validationSchema: Yup.object({
-            name: Yup.string().required(requiredMsg),
+            name: Yup.string().required(),
+            email: Yup.string().required(),
             phone: Yup.string().required(requiredMsg).matches(/^[0-9\-\+]{9,15}$/, 'Số điện thoại không hợp lệ'),
-            email: Yup.string().required(requiredMsg).email('Trường này phải là email'),
             address: Yup.string().required(requiredMsg)
         }),
-        onSubmit: async (values) => {
-            const data = await order([values, carts]);
+        onSubmit: async () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const infor = {
+                _id: user._id,
+                phone: form.values.phone,
+                address: form.values.address,
+            }
+            const data = await order(infor, carts);
             if (data.success) {
                 localStorage.removeItem('carts');
                 setCarts([]);
@@ -36,10 +42,8 @@ function Checkout() {
 
     useEffect(() => {
         const user = JSON.parse(localStorage.getItem('user'));
-        if (user) {
-            form.values.name = user.username;
-            form.values.email = user.email;
-        }
+        form.values.name = user.username;
+        form.values.email = user.email;
     }, []);
 
     useEffect(() => {
@@ -65,9 +69,7 @@ function Checkout() {
                                 <div className="checkout__infor-person-form">
                                     <div className="checkout__infor-person-row">
                                         <label>Họ tên</label>
-                                        <TextField  id='name' name='name' placeholder='Họ tên'
-                                            value={form.values.name} onChange={form.handleChange}
-                                        />
+                                        <TextField name='name' disabled placeholder='Họ tên' value={form.values.name} />
                                         <span className='checkout__infor-person-mess'>
                                             { form.errors.name ? form.errors.name : '' }
                                         </span>
@@ -75,7 +77,7 @@ function Checkout() {
                                     <div className="checkout__infor-person-row">
                                         <div>
                                             <label>Số điện thoại</label>
-                                            <TextField placeholder='Số điện thoại' id='phone' name='phone'
+                                            <TextField placeholder='Số điện thoại' name='phone'
                                                 value={form.values.phone} onChange={form.handleChange} 
                                             />
                                             <span className='checkout__infor-person-mess'>
@@ -85,9 +87,7 @@ function Checkout() {
 
                                         <div>
                                             <label>Email</label>
-                                            <TextField placeholder='Email' id='email' name='email' 
-                                                value={form.values.email} onChange={form.handleChange}
-                                            /> 
+                                            <TextField placeholder='Email' name='email' disabled value={form.values.email} /> 
                                             <span className='checkout__infor-person-mess'>
                                                 { form.errors.email ? form.errors.email : '' }
                                             </span>             
@@ -96,7 +96,7 @@ function Checkout() {
                                     <div className="checkout__infor-person-row">
                                         <div className="checkout__infor-person-wrap">
                                             <label>Địa chỉ nhận hàng</label>
-                                            <TextField placeholder='Địa chỉ nhận hàng' id='address' name='address' 
+                                            <TextField placeholder='Địa chỉ nhận hàng' name='address' 
                                                 value={form.values.address} onChange={form.handleChange}
                                             /> 
                                         </div>

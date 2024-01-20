@@ -50,7 +50,12 @@ function Cart() {
     }
 
     const handlePayment = () => {
-        navigate('/checkout');
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            navigate('/checkout');
+        } else {
+            navigate('/login');
+        }
     }
 
     return ( 

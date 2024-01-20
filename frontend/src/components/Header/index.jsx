@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import './style.scss';
+import { logout } from '../../services/authentication';
 
 function Header() {
     const navigate = useNavigate();
@@ -50,12 +51,15 @@ function Header() {
         onCloseMenu();
     }
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
+        await logout(user._id);
         localStorage.removeItem('user');
+        localStorage.removeItem('token');
         setUser(null);
+    
         onCloseMenu();
-        toast.success('Đăng xuất thành công');
         redirectToHomePage();
+        toast.success('Đăng xuất thành công');
     }
 
     return ( 

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import auth_image from '../../assets/auth_image.PNG';
-import { register } from '../../services/auth';
+import { register } from '../../services/authentication';
 import './style.scss';
 
 function Register() {

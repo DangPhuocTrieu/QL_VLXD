@@ -36,9 +36,9 @@ function OrderManagement() {
                                 </TableHead>
                                 <TableBody>
                                     {
-                                        orders.map(item => (
+                                        orders?.map(item => (
                                             <TableRow key={item._id}>
-                                                <TableCell>{item.customer.name}</TableCell>
+                                                <TableCell>{item.username}</TableCell>
                                                 <TableCell>{item.orderDate}</TableCell>
                                                 <TableCell>{item.address}</TableCell>
                                                 <TableCell>{formatPrice(item.totalPrice)}</TableCell>

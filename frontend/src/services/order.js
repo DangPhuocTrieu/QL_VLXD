@@ -11,9 +11,9 @@ export const getAllOrders = async() => {
     }
 }
 
-export const order = async(data) => {
+export const order = async(user, products) => {
     try {
-        const response = await axios.post(`${BASE_URL}`, data);
+        const response = await axios.post(`${BASE_URL}/${user._id}`, [user, products]);
         return response.data;
     } catch (error) {
         return error.response.data;

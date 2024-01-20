@@ -21,9 +21,14 @@ export const getProductsByCategory = async(categoryId) => {
 }
 
 export const addProduct = async(data) => {
+    const token = JSON.parse(localStorage.getItem('token'));
     try {
         delete data._id;
-        const response = await axios.post(`${BASE_URL}/create/${data.categoryId}`, data);
+        const response = await axios.post(`${BASE_URL}/create/${data.categoryId}`, data, {
+            headers: {
+                Authorization: token
+            }
+        });
         return response.data;
     } catch (error) {
         return error.response.data;
@@ -31,8 +36,13 @@ export const addProduct = async(data) => {
 }
 
 export const editProduct = async(data) => {
+    const token = JSON.parse(localStorage.getItem('token'));
     try {
-        const response = await axios.put(`${BASE_URL}/edit/${data._id}`, data);
+        const response = await axios.put(`${BASE_URL}/edit/${data._id}`, data, {
+            headers: {
+                Authorization: token
+            }
+        });
         return response.data;
     } catch (error) {
         return error.response.data;
@@ -40,8 +50,13 @@ export const editProduct = async(data) => {
 }
 
 export const deleteProduct = async(id) => {
+    const token = JSON.parse(localStorage.getItem('token'));
     try {
-        const response = await axios.delete(`${BASE_URL}/delete/${id}`);
+        const response = await axios.delete(`${BASE_URL}/delete/${id}`, {
+            headers: {
+                Authorization: token
+            }
+        });
         return response.data;
     } catch (error) {
         return error.response.data;

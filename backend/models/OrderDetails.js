@@ -6,8 +6,8 @@ const orderDetailsSchema = new mongoose.Schema({
         ref: 'Order'
     },
     productId: { 
-        type: mongoose.Types.ObjectId, 
-        ref: 'Product'
+        type: String,
+        required: true 
     },
     quantity: { 
         type: Number,

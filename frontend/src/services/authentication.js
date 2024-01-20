@@ -19,3 +19,12 @@ export const register = async(data) => {
         return error.response.data;
     }
 }
+
+export const logout = async(userId) => {
+    try {
+        const response = await axios.delete(`${BASE_URL}/logout/${userId}`);
+        return response.data;
+    } catch (error) {
+        return error.response.data;
+    }
+}

@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import auth_image from '../../assets/auth_image.PNG';
-import { login } from '../../services/auth';
+import { login } from '../../services/authentication';
 import './style.scss';
 
 function Login() {
@@ -19,18 +19,21 @@ function Login() {
     }
 
     const onSumbit = async () => {
-        const data = await login({ email, password });
-        if (data.success) {
-            localStorage.setItem('user', JSON.stringify(data.data));
-            dispatch({ type: 'LOGIN', payload: data.data });
+        const response = await login({ email, password });
+        if (response.success) {
+            const { user, token } = response.data;
+
+            localStorage.setItem('token', JSON.stringify(token));
+            localStorage.setItem('user', JSON.stringify(user));
+            dispatch({ type: 'LOGIN', payload: user });
         
-            if (data.data.isAdmin) {
+            if (user.isAdmin) {
                 navigate('/admin');
             } else {
                 navigate('/');
             }
         } else {
-            toast.error(data.message);
+            toast.error(response.message);
         }
     }
 
